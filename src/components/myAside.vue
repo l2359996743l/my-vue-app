@@ -1,9 +1,9 @@
 <template>
   <el-aside class="myside">
-    <el-scrollbar class="scroll_bar" style="background: #1f2d3d">
+    <!-- <el-scrollbar class="scroll_bar" style="background: #1f2d3d"> -->
         <el-menu
-        style="margin-right: -1px"
-        default-active="2"
+        style="height: 100%"
+        :default-active="openMenuIndex"
         class="el-menu-vertical-demo"
         :collapse="isCollapse"
         @open="handleOpen"
@@ -11,9 +11,9 @@
         text-color="rgb(204, 198, 198)"
         background-color="#1f2d3d"
         >
-        <div class="side_title">后台通用管理系统</div>
+        <div class="side_title">{{isCollapse ? '后台' : '通用后台管理系统'}}</div>
         <!-- noChildrenMenu -->
-        <el-menu-item  v-for="item of noChildren" :key="item.path" :index="item.path">
+        <el-menu-item @click="clickMenu(item)" v-for="item of noChildren" :key="item.path" :index="item.path">
             <el-icon>
                 <component :is="item.icon" />
             </el-icon>
@@ -27,7 +27,7 @@
                 </el-icon>
                 <span>{{item.label}}</span>
             </template>
-            <el-menu-item v-for="c in item.children" :key="c.path" :index="c.path">
+            <el-menu-item @click="clickMenu(c)" v-for="c in item.children" :key="c.path" :index="c.path">
                 <template #title>
                     <el-icon>
                         <component :is="c.icon" />
@@ -41,7 +41,7 @@
         </el-sub-menu> -->
         </el-sub-menu>
       </el-menu>
-    </el-scrollbar>
+    <!-- </el-scrollbar> -->
   </el-aside>
 </template>
 
@@ -51,51 +51,53 @@ import {
 } from '@element-plus/icons-vue'
 import { computed, defineComponent, reactive, toRefs } from "vue";
 import { useRouter,useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 export default defineComponent({
     components: {IconMenu},
     setup() {
         let router = useRouter()
         let route = useRoute()
-        console.log('luyou: ',router,route);
+        let store = useStore()
+        console.log('store:',store);
         const data = reactive({
-            isCollapse: false,
+            openMenuIndex: '/',
             menu: [
                 {
                     path: '/',
-                    name: 'home',
+                    name: 'Home',
                     label: '首页',
                     icon: 's-home',
                     url: 'Home/Home'
                 },
                 {
                     path: '/mall',
-                    name: 'mall',
+                    name: 'Mall',
                     label: '商品管理',
                     icon: 'video-play',
                     url: 'MallManage/MallManage'
                 },
                 {
                     path: '/user',
-                    name: 'user',
+                    name: 'User',
                     label: '用户管理',
                     icon: 'user',
                     url: 'UserManage/UserManage'
                 },
                 {
                     label: '其他',
-                    // path: '/other',
+                    path: '/other',
                     icon: 'location',
                     children: [
                         {
                             path: '/page1',
-                            name: 'page1',
+                            name: 'Page1',
                             label: '页面',
                             icon: 'setting',
                             url: 'Other/PageOne'
                         },
                         {
                             path: '/page2',
-                            name: 'page2',
+                            name: 'Page2',
                             label: '页面2',
                             icon: 'setting',
                             url: 'Other/PageTwo'
@@ -103,20 +105,26 @@ export default defineComponent({
                     ]
                 },
             ],
+            isCollapse: computed(() => store.state.tag.isCollapse),
             hasChildren: computed(() => data.menu.filter(o => o.children)),
             noChildren: computed(() => data.menu.filter(o => !o.children)),
         })
-        const handleOpen = (key, keyPath) => {
-        console.log(key, keyPath);
-        };
-        const handleClose = (key, keyPath) => {
-        console.log(key, keyPath);
-        };
-
+        const methods = {
+            clickMenu(item) {
+                router.push({name: item.name})
+            },
+            handleOpen(key, keyPath) {
+                data.openMenuIndex = key
+                console.log(key,keyPath);
+            },
+            handleClose(key, keyPath) {
+                data.openMenuIndex = key
+                console.log(key,keyPath);
+            }
+        }
         return {
             ...toRefs(data),
-            handleOpen,
-            handleClose,
+            ...methods
         };
     },
 });
@@ -127,9 +135,6 @@ export default defineComponent({
   background-color: #fff;
   overflow: hidden;
   padding: 0;
-  .scroll_bar {
-    // height: 100%;
-  }
   .scroll_bar_item {
     display: flex;
     align-items: center;
@@ -141,7 +146,7 @@ export default defineComponent({
     color: var(--el-color-primary);
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
+    // width: 200px;
     // min-height: 400px;
   }
   .side_title {

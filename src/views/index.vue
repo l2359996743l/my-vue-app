@@ -8,7 +8,8 @@
   </el-container>
 </template>
 <script>
-import { defineComponent, reactive,toRefs} from 'vue'
+import { defineComponent, reactive,toRefs, watch} from 'vue'
+import { useRoute } from 'vue-router'
 import myAside from '../components/myAside.vue'
 import myHeader from '../components/myHeader.vue'
 import myMain from '../components/myMain.vue'
