@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style lang="less">
-    .mymain {
-        background-color: skyblue;
-    }
+  .mymain {
+      background-color: skyblue;
+  }
 </style>
