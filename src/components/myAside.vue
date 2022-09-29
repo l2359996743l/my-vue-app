@@ -145,10 +145,10 @@ export default defineComponent({
     background: #fff;
     color: var(--el-color-primary);
   }
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    // width: 200px;
-    // min-height: 400px;
-  }
+//   .el-menu-vertical-demo:not(.el-menu--collapse) {
+//     // width: 200px;
+//     // min-height: 400px;
+//   }
   .side_title {
     color: rgb(204, 198, 198);
     text-align: center;
